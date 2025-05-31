@@ -23,6 +23,11 @@ func NewDatabaseStarter() *DatabaseStarter {
 	return &DatabaseStarter{db: db}
 }
 
+// DB returns the pointer to the GORM DB instance.
+func (d *DatabaseStarter) DB() *gorm.DB {
+	return d.db
+}
+
 // MakeMigrations performs all the migrations process
 func (d *DatabaseStarter) MakeMigrations() {
 	d.db.AutoMigrate(

@@ -2,11 +2,11 @@ package schemas
 
 // CustomerInputSchema is the schema for Customers creation
 type CustomerInputSchema struct {
-	Fname                string `json:"fName"`
-	Lname                string `json:"lName"`
-	Email                string `json:"email"`
-	Password             string `json:"password"`
-	PasswordConfirmation string `json:"passwordConfirmation"`
+	Fname                string `json:"fName" validate:"required"`
+	Lname                string `json:"lName" validate:"required"`
+	Email                string `json:"email" validate:"required,email"`
+	Password             string `json:"password" validate:"required,password"`
+	PasswordConfirmation string `json:"passwordConfirmation" validate:"required,eqfield=Password"`
 }
 
 // CustomerOutputSchema represents the customer schema returned by the API
@@ -15,4 +15,11 @@ type CustomerOutputSchema struct {
 	Fname string `json:"fName"`
 	Lname string `json:"lName"`
 	Email string `json:"email"`
+}
+
+// CustomerPatchInputSchema is the schema for Customers update
+type CustomerPatchInputSchema struct {
+	Fname                string `json:"fName,omitempty"`
+	Lname                string `json:"lName,omitempty"`
+	Email                string `json:"email,omitempty" validate:"email"`
 }

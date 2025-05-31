@@ -2,8 +2,14 @@ package main
 
 import (
 	"log"
+	"net/http"
 
+	"github.com/LeandroDeJesus-S/confectionery/api/controllers"
+	"github.com/LeandroDeJesus-S/confectionery/api/routes"
+	"github.com/LeandroDeJesus-S/confectionery/api/validators"
 	"github.com/LeandroDeJesus-S/confectionery/config/database"
+	"github.com/go-playground/validator/v10"
+	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 )
 
@@ -16,4 +22,12 @@ func main() {
 
 	db := database.NewDatabaseStarter()
 	db.MakeMigrations()
+
+	baseRouter := mux.NewRouter()
+	validator := validator.New(validator.WithRequiredStructEnabled())
+	validator.RegisterValidation("password", validators.PasswordValidator)
+
+	routes.SetupCustomersRoutes(baseRouter, controllers.NewCustomerController(db.DB(), validator))
+
+	log.Fatal(http.ListenAndServe(":8080", baseRouter))
 }
