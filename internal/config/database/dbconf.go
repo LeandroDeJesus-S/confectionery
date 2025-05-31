@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/LeandroDeJesus-S/confectionery/api/models"
+	"github.com/LeandroDeJesus-S/confectionery/internal/models"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
