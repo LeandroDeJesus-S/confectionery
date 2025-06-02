@@ -6,7 +6,6 @@ import (
 
 	"github.com/LeandroDeJesus-S/confectionery/internal/controllers"
 	"github.com/LeandroDeJesus-S/confectionery/internal/routes"
-	"github.com/LeandroDeJesus-S/confectionery/internal/validators"
 	"github.com/LeandroDeJesus-S/confectionery/internal/config/database"
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
@@ -27,12 +26,11 @@ func main() {
 
 	baseRouter := mux.NewRouter()
 	validator := validator.New(validator.WithRequiredStructEnabled())
-	validator.RegisterValidation("password", validators.PasswordValidator)
 
 	routes.SetupCustomersRoutes(baseRouter, controllers.NewCustomerController(db.DB(), validator))
 	log.Println("All routes configured")
 
 	addr := ":8080"
+	log.Println("Listening to on address:", addr)
 	log.Fatal(http.ListenAndServe(addr, baseRouter))
-	log.Println("Listening on address:", addr)
 }

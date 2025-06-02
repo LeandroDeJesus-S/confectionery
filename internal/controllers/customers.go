@@ -112,7 +112,7 @@ func (c *CustomerController) GetCustomer(w http.ResponseWriter, r *http.Request)
 // If the customer is successfully created, the function will return the created customer as a JSON
 // response with the HTTP status code 201 Created.
 func (c *CustomerController) CreateCustomer(w http.ResponseWriter, r *http.Request) {
-	var inpCustomer *schemas.CustomerInputSchema
+	var inpCustomer schemas.CustomerInputSchema
 	err := json.NewDecoder(r.Body).Decode(&inpCustomer)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
@@ -148,7 +148,6 @@ func (c *CustomerController) CreateCustomer(w http.ResponseWriter, r *http.Reque
 		Fname:    inpCustomer.Fname,
 		Lname:    inpCustomer.Lname,
 		Email:    inpCustomer.Email,
-		Password: inpCustomer.Password,
 	}
 	res := c.db.Create(&dbCustomer)
 	if res.Error != nil {
@@ -314,7 +313,7 @@ func (c *CustomerController) DeleteCustomer(w http.ResponseWriter, r *http.Reque
 	}
 
 	var dbCustomer models.Customer
-	result := c.db.First(&dbCustomer, customerId, "active = ?", true)
+	result := c.db.First(&dbCustomer, "id = ? AND active = ?", customerId, true)
 
 	switch result.Error {
 	case gorm.ErrRecordNotFound:

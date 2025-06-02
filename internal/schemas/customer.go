@@ -5,8 +5,6 @@ type CustomerInputSchema struct {
 	Fname                string `json:"fName" validate:"required"`
 	Lname                string `json:"lName" validate:"required"`
 	Email                string `json:"email" validate:"required,email"`
-	Password             string `json:"password" validate:"required,password"`
-	PasswordConfirmation string `json:"passwordConfirmation" validate:"required,eqfield=Password"`
 }
 
 // CustomerOutputSchema represents the customer schema returned by the API
