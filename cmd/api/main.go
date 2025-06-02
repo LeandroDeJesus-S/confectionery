@@ -19,15 +19,18 @@ func main() {
 		log.Fatal("Cannot load .env file:", err)
 	}
 
-	db := database.NewDatabaseStarter()
+	dbStarter := database.NewDatabaseStarter()
+	db := dbStarter.DB()
 	log.Println("Database started")
-	db.MakeMigrations()
+
+	dbStarter.MakeMigrations()
 	log.Println("All migrations performed")
 
 	baseRouter := mux.NewRouter()
 	validator := validator.New(validator.WithRequiredStructEnabled())
 
-	routes.SetupCustomersRoutes(baseRouter, controllers.NewCustomerController(db.DB(), validator))
+	routes.SetupCustomersRoutes(baseRouter, controllers.NewCustomerController(db, validator))
+	routes.SetupCakeRoutes(baseRouter, controllers.NewCakeController(db, validator))
 	log.Println("All routes configured")
 
 	addr := ":8080"

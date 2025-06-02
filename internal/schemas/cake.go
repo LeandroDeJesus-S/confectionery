@@ -1,8 +1,18 @@
 package schemas
 
-// Cake represents the schema of a Cake of the confectionery
-type Cake struct {
+
+type CakeInputSchema struct {
+	Name  string `json:"name" validate:"required"`
+	Price uint64  `json:"price" validate:"required"`
+}
+
+type CakePatchInputSchema struct {
+	Name  string `json:"name,omitempty"`
+	Price *uint64  `json:"price,omitempty"`
+}
+
+type CakeOutputSchema struct {
 	ID    uint   `json:"id"`
 	Name  string `json:"name"`
-	Price int64  `json:"price"`
+	Price uint64  `json:"price"`
 }

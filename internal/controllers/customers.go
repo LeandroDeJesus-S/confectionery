@@ -233,48 +233,16 @@ func (c *CustomerController) UpdateCustomer(w http.ResponseWriter, r *http.Reque
 	}
 
 	var input schemas.CustomerPatchInputSchema
-	json.NewDecoder(r.Body).Decode(&input)
+	deacoded := json.NewDecoder(r.Body).Decode(&input)
 
-	if input.Fname != "" {
-		dbCustomer.Fname = input.Fname
-	}
-	if input.Lname != "" {
-		dbCustomer.Lname = input.Lname
-	}
-	if input.Email != "" {
-		isValidEmail := errorhandling.CheckOrHttpError(
-			c.validator.Var(input.Email, "email"), 
-			w, 
-			http.StatusBadRequest, 
-			"Invalid email",
-		)
-
-		if !isValidEmail {
-			return
-		}
-
-		if c.db.First(&models.Customer{}, "email = ?", input.Email).RowsAffected > 0 {
-			httphelpers.JsonResponse(
-				w,
-				http.StatusBadRequest,
-				&schemas.Message{
-					Code:    http.StatusBadRequest,
-					Detail: []string{"Email already exists"},
-				},
-			)
-			return
-		}
-
-		dbCustomer.Email = input.Email
+	if !errorhandling.CheckOrHttpError(deacoded, w, http.StatusBadRequest, "Invalid input") {
+		return
 	}
 
-	res = c.db.Save(&dbCustomer)
-	
-	saveChecked := errorhandling.CheckOrHttpError(
-		res.Error, w, http.StatusInternalServerError,
-		"Error updating customer",
-	)
-	if !saveChecked {
+	updated := c.db.Model(&dbCustomer).Updates(input)
+	if !errorhandling.CheckOrHttpError(
+		updated.Error, w, http.StatusInternalServerError, "Error updating customer",
+	) {
 		return
 	}
 
