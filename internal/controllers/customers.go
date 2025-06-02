@@ -25,14 +25,14 @@ func NewCustomerController(db *gorm.DB, validator *validator.Validate) *Customer
 	return &CustomerController{db: db, validator: validator}
 }
 
-// GetAllCustomers retrieves all customers from the database,
+// GetAllCustomers retrieves all the active customers from the database,
 // converts them to the output schema, and encodes the result
 // as a JSON response.
 func (c *CustomerController) GetAllCustomers(w http.ResponseWriter, r *http.Request) {
 	var dbCustomers []models.Customer
 	outputCustomers := make([]schemas.CustomerOutputSchema, 0)
 
-	c.db.Find(&dbCustomers)
+	c.db.Find(&dbCustomers, "active = ?", true)
 
 	for _, dbCustomer := range dbCustomers {
 		outputCustomer := schemas.CustomerOutputSchema{
@@ -51,7 +51,7 @@ func (c *CustomerController) GetAllCustomers(w http.ResponseWriter, r *http.Requ
 	)
 }
 
-// GetCustomer retrieves a customer by ID from the database, converts it
+// GetCustomer retrieves an active customer by ID from the database, converts it
 // to the output schema, and encodes the result as a JSON response.
 func (c *CustomerController) GetCustomer(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
@@ -62,7 +62,7 @@ func (c *CustomerController) GetCustomer(w http.ResponseWriter, r *http.Request)
 	}
 
 	var dbCustomer models.Customer
-	result := c.db.First(&dbCustomer, id)
+	result := c.db.First(&dbCustomer, "id = ? AND active = ?", id, true)
 
 	switch result.Error {
 	default:
@@ -292,7 +292,7 @@ func (c *CustomerController) UpdateCustomer(w http.ResponseWriter, r *http.Reque
 }
 
 
-// DeleteCustomer deletes a customer by ID and returns a 204 No Content response.
+// DeleteCustomer deletes a customer by ID changing its active status and returns a 204 No Content response.
 //
 // If the ID is invalid, the function will return a 400 Bad Request response.
 //
@@ -314,7 +314,7 @@ func (c *CustomerController) DeleteCustomer(w http.ResponseWriter, r *http.Reque
 	}
 
 	var dbCustomer models.Customer
-	result := c.db.First(&dbCustomer, customerId)
+	result := c.db.First(&dbCustomer, customerId, "active = ?", true)
 
 	switch result.Error {
 	case gorm.ErrRecordNotFound:
@@ -343,6 +343,7 @@ func (c *CustomerController) DeleteCustomer(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
-	c.db.Delete(&dbCustomer)
+	dbCustomer.Active = false
+	c.db.Save(&dbCustomer)
 	httphelpers.JsonResponse(w, http.StatusNoContent, nil)
 }

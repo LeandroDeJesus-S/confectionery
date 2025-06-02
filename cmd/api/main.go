@@ -21,13 +21,18 @@ func main() {
 	}
 
 	db := database.NewDatabaseStarter()
+	log.Println("Database started")
 	db.MakeMigrations()
+	log.Println("All migrations performed")
 
 	baseRouter := mux.NewRouter()
 	validator := validator.New(validator.WithRequiredStructEnabled())
 	validator.RegisterValidation("password", validators.PasswordValidator)
 
 	routes.SetupCustomersRoutes(baseRouter, controllers.NewCustomerController(db.DB(), validator))
+	log.Println("All routes configured")
 
-	log.Fatal(http.ListenAndServe(":8080", baseRouter))
+	addr := ":8080"
+	log.Fatal(http.ListenAndServe(addr, baseRouter))
+	log.Println("Listening on address:", addr)
 }
