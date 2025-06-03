@@ -70,7 +70,7 @@ func (c *CustomerController) GetCustomer(w http.ResponseWriter, r *http.Request)
 			w,
 			http.StatusInternalServerError,
 			schemas.Message{
-				Code:    http.StatusInternalServerError,
+				Code:   http.StatusInternalServerError,
 				Detail: []string{"Internal server error"},
 			},
 		)
@@ -137,7 +137,7 @@ func (c *CustomerController) CreateCustomer(w http.ResponseWriter, r *http.Reque
 			w,
 			http.StatusConflict,
 			&schemas.Message{
-				Code:    http.StatusConflict,
+				Code:   http.StatusConflict,
 				Detail: []string{"Email already exists"},
 			},
 		)
@@ -145,9 +145,9 @@ func (c *CustomerController) CreateCustomer(w http.ResponseWriter, r *http.Reque
 	}
 
 	dbCustomer := models.Customer{
-		Fname:    inpCustomer.Fname,
-		Lname:    inpCustomer.Lname,
-		Email:    inpCustomer.Email,
+		Fname: inpCustomer.Fname,
+		Lname: inpCustomer.Lname,
+		Email: inpCustomer.Email,
 	}
 	res := c.db.Create(&dbCustomer)
 	if res.Error != nil {
@@ -155,7 +155,7 @@ func (c *CustomerController) CreateCustomer(w http.ResponseWriter, r *http.Reque
 			w,
 			http.StatusInternalServerError,
 			&schemas.Message{
-				Code:    http.StatusInternalServerError,
+				Code:   http.StatusInternalServerError,
 				Detail: []string{"Error creating customer: " + res.Error.Error()},
 			},
 		)
@@ -175,7 +175,6 @@ func (c *CustomerController) CreateCustomer(w http.ResponseWriter, r *http.Reque
 		outCustomer,
 	)
 }
-
 
 // UpdateCustomer updates an existing customer's details by ID from the database.
 // It parses the customer ID from the URL, verifies its validity, and retrieves
@@ -200,7 +199,7 @@ func (c *CustomerController) UpdateCustomer(w http.ResponseWriter, r *http.Reque
 			w,
 			http.StatusBadRequest,
 			&schemas.Message{
-				Code:    http.StatusBadRequest,
+				Code:   http.StatusBadRequest,
 				Detail: []string{"Invalid customer ID"},
 			},
 		)
@@ -210,7 +209,7 @@ func (c *CustomerController) UpdateCustomer(w http.ResponseWriter, r *http.Reque
 	var dbCustomer models.Customer
 	res := c.db.First(&dbCustomer, customerID)
 	errMsg := &schemas.Message{
-		Code:    http.StatusInternalServerError,
+		Code:   http.StatusInternalServerError,
 		Detail: []string{"Unexpected error"},
 	}
 
@@ -258,7 +257,6 @@ func (c *CustomerController) UpdateCustomer(w http.ResponseWriter, r *http.Reque
 	)
 }
 
-
 // DeleteCustomer deletes a customer by ID changing its active status and returns a 204 No Content response.
 //
 // If the ID is invalid, the function will return a 400 Bad Request response.
@@ -289,7 +287,7 @@ func (c *CustomerController) DeleteCustomer(w http.ResponseWriter, r *http.Reque
 			w,
 			http.StatusNotFound,
 			&schemas.Message{
-				Code:    http.StatusNotFound,
+				Code:   http.StatusNotFound,
 				Detail: []string{"Customer not found"},
 			},
 		)
@@ -303,7 +301,7 @@ func (c *CustomerController) DeleteCustomer(w http.ResponseWriter, r *http.Reque
 			w,
 			http.StatusInternalServerError,
 			&schemas.Message{
-				Code:    http.StatusInternalServerError,
+				Code:   http.StatusInternalServerError,
 				Detail: []string{"Something went wrong"},
 			},
 		)

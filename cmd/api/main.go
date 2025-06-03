@@ -4,14 +4,13 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/LeandroDeJesus-S/confectionery/internal/config/database"
 	"github.com/LeandroDeJesus-S/confectionery/internal/controllers"
 	"github.com/LeandroDeJesus-S/confectionery/internal/routes"
-	"github.com/LeandroDeJesus-S/confectionery/internal/config/database"
 	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
 )
-
 
 func main() {
 	err := godotenv.Load()
@@ -31,6 +30,7 @@ func main() {
 
 	routes.SetupCustomersRoutes(baseRouter, controllers.NewCustomerController(db, validator))
 	routes.SetupCakeRoutes(baseRouter, controllers.NewCakeController(db, validator))
+	routes.SetupOrdersRoutes(baseRouter, controllers.NewOrdersController(db, validator))
 	log.Println("All routes configured")
 
 	addr := ":8080"

@@ -178,7 +178,7 @@ func (c *CakeController) UpdateCake(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var dbCake models.Cake
-	
+
 	duplicated := c.db.First(&dbCake, "name = ?", inputCake.Name)
 	if duplicated.RowsAffected > 0 {
 		m := schemas.Message{Code: http.StatusBadRequest, Detail: []string{"Cake already exists"}}
@@ -189,7 +189,8 @@ func (c *CakeController) UpdateCake(w http.ResponseWriter, r *http.Request) {
 	result := c.db.First(&dbCake, cakeId)
 
 	switch result.Error {
-	case nil: break
+	case nil:
+		break
 
 	case gorm.ErrRecordNotFound:
 		httphelpers.JsonResponse(
@@ -233,7 +234,7 @@ func (c *CakeController) UpdateCake(w http.ResponseWriter, r *http.Request) {
 // If the customer is successfully deleted, the function will return a 204 No Content response.
 func (c *CakeController) DeleteCake(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	cakeId, err := strconv.ParseUint(vars["id"], 10, 32)	
+	cakeId, err := strconv.ParseUint(vars["id"], 10, 32)
 
 	castCheck := errorhandling.CheckOrHttpError(err, w, http.StatusBadRequest, "Invalid cake id")
 	if !castCheck {

@@ -6,12 +6,12 @@ import (
 )
 
 func SetupCakeRoutes(baseRouter *mux.Router, cakeController *controllers.CakeController) {
-	customersRouter := baseRouter.PathPrefix("/cakes").Subrouter()
+	r := baseRouter.PathPrefix("/cakes").Subrouter()
 
-	customersRouter.HandleFunc("/", cakeController.GetCakes).Methods("GET")
-	customersRouter.HandleFunc("/", cakeController.CreateCake).Methods("POST")
+	r.HandleFunc("/", cakeController.GetCakes).Methods("GET")
+	r.HandleFunc("/", cakeController.CreateCake).Methods("POST")
 
-	customersRouter.HandleFunc("/{id}", cakeController.GetCake).Methods("GET")
-	customersRouter.HandleFunc("/{id}", cakeController.UpdateCake).Methods("PATCH")
-	customersRouter.HandleFunc("/{id}", cakeController.DeleteCake).Methods("DELETE")
+	r.HandleFunc("/{id}", cakeController.GetCake).Methods("GET")
+	r.HandleFunc("/{id}", cakeController.UpdateCake).Methods("PATCH")
+	r.HandleFunc("/{id}", cakeController.DeleteCake).Methods("DELETE")
 }
